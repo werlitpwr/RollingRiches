@@ -18,6 +18,10 @@ public class PlayerControler : MonoBehaviour
     bool isGrounded;
     public GameObject TextWin;
 
+    void Start()
+    {
+        score = PlayerPrefs.GetInt("PlayerScore", 0);
+    }
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -53,9 +57,10 @@ public class PlayerControler : MonoBehaviour
         if(other.gameObject.tag == "Coin")
         {
             other.gameObject.SetActive(false);
-
             score++;
 
+            PlayerPrefs.SetInt("PlayerScore", score);
+            
             if(score >= winScore)
             {
                 TextWin.SetActive(true);
