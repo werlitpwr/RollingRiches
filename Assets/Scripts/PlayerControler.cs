@@ -30,7 +30,7 @@ public class PlayerControler : MonoBehaviour
        // Restart the scene if the player falls below a certain height
        if(transform.position.y < -5f) 
        {
-            SceneManager.LoadScene("Game");
+            SceneManager.LoadScene("Level 1");
        }
 
        // Check for jump input and if the player is grounded
