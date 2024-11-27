@@ -7,6 +7,7 @@ public class PlayerControler : MonoBehaviour
 {
     public float speed = 5;
     public float jumpForce = 10f;
+    public int winScore = 6;
 
     Rigidbody rb;
 
@@ -15,8 +16,6 @@ public class PlayerControler : MonoBehaviour
 
     int score = 0;
     bool isGrounded;
-    public int winScore = 6;
-
     public GameObject TextWin;
 
     private void Awake()
@@ -60,7 +59,10 @@ public class PlayerControler : MonoBehaviour
             if(score >= winScore)
             {
                 TextWin.SetActive(true);
+
+                LoadNextLevel();
             }
+            
 
         }
     }
@@ -73,4 +75,13 @@ public class PlayerControler : MonoBehaviour
             isGrounded = true; // Allow jumping again
         }
     }
+
+    void LoadNextLevel()
+    {
+       
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex + 1); 
+    }
 }
+
+
