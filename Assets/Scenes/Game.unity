@@ -186,7 +186,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4278433772
-  m_fontColor: {r: 0.9245283, g: 0.71745676, b: 0.013082923, a: 1}
+  m_fontColor: {r: 0.9254902, g: 0.86929506, b: 0.011764723, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -209,8 +209,8 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -406,6 +406,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1555064137}
+  offset: {x: 0, y: 5, z: -20}
+  smoothSpeed: 0.125
 --- !u!1001 &394451594
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1239,7 +1241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2b771336792b4d23aa4669a2e1aa861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 7
+  speed: 5
   winScore: 6
   TextWin: {fileID: 118662173}
 --- !u!1 &2023188201
