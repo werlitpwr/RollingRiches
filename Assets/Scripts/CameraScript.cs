@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraScript : MonoBehaviour
 {
     public Transform target; // Reference to the object the camera will follow
-    public Vector3 offset = new Vector3(0, 5, -20); // Offset to keep the camera at a fixed distance and angle
+    public Vector3 offset = new Vector3(0, 18, -20); // Offset to keep the camera at a fixed distance and angle
     public float smoothSpeed = 0.125f; // Smoothing speed for camera movement
 
     private void FixedUpdate()
