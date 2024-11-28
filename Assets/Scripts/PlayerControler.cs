@@ -8,6 +8,9 @@ public class PlayerControler : MonoBehaviour
     public float speed = 5;
     public float jumpForce = 10f;
     public int winScore = 6;
+    public LevelInfoManager levelInfo;
+
+
 
     Rigidbody rb;
 
@@ -63,8 +66,9 @@ public class PlayerControler : MonoBehaviour
             score++;
             inventory ++;
 
+            levelInfo.UpdateScore(score);
             PlayerPrefs.SetInt("PlayerInventory", inventory);
-            
+
             if(score >= winScore)
             {
                 TextWin.SetActive(true);
