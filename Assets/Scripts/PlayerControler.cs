@@ -15,12 +15,15 @@ public class PlayerControler : MonoBehaviour
     float yInput;
 
     int score = 0;
+    int inventory = 0;
     bool isGrounded;
     public GameObject TextWin;
 
     void Start()
     {
-        score = PlayerPrefs.GetInt("PlayerScore", 0);
+        score = 0;
+
+        inventory = PlayerPrefs.GetInt("PlayerInventory", 0);
     }
     private void Awake()
     {
@@ -58,8 +61,9 @@ public class PlayerControler : MonoBehaviour
         {
             other.gameObject.SetActive(false);
             score++;
+            inventory ++;
 
-            PlayerPrefs.SetInt("PlayerScore", score);
+            PlayerPrefs.SetInt("PlayerInventory", inventory);
             
             if(score >= winScore)
             {
@@ -83,7 +87,6 @@ public class PlayerControler : MonoBehaviour
 
     void LoadNextLevel()
     {
-       
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentSceneIndex + 1); 
     }
