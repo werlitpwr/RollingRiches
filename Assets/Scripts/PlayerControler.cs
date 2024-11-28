@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlayerControler : MonoBehaviour
 {
@@ -9,8 +10,6 @@ public class PlayerControler : MonoBehaviour
     public float jumpForce = 10f;
     public int winScore = 6;
     public LevelInfoManager levelInfo;
-
-
 
     Rigidbody rb;
 
@@ -21,12 +20,14 @@ public class PlayerControler : MonoBehaviour
     int inventory = 0;
     bool isGrounded;
     public GameObject TextWin;
+    public TextMeshProUGUI LevelText;
 
     void Start()
     {
         score = 0;
-
         inventory = PlayerPrefs.GetInt("PlayerInventory", 0);
+
+        StartCoroutine(DisplayLevelMessage());
     }
     private void Awake()
     {
@@ -70,17 +71,36 @@ public class PlayerControler : MonoBehaviour
             inventory ++;
 
             levelInfo.UpdateScore(score);
+            PlayerPrefs.SetInt("PlayerScore", score);
             PlayerPrefs.SetInt("PlayerInventory", inventory);
-
+            PlayerPrefs.Save();
             if(score >= winScore)
             {
                 TextWin.SetActive(true);
-
-                LoadNextLevel();
+                StartCoroutine(WaitAndLoadNextLevel());
             }
             
 
         }
+    }
+
+    private IEnumerator WaitAndLoadNextLevel()
+    {
+        yield return new WaitForSeconds(2f); // Wait for 2 seconds
+        LoadNextLevel(); // Call the function to load the next level
+    }
+
+    private IEnumerator DisplayLevelMessage()
+    {
+        int levelNumber = SceneManager.GetActiveScene().buildIndex;
+
+        LevelText.text = $"LEVEL {levelNumber}";
+
+        LevelText.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(2f);
+
+        LevelText.gameObject.SetActive(false);
     }
 
     private void OnCollisionEnter(Collision collision)
