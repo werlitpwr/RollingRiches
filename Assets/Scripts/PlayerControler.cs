@@ -57,8 +57,11 @@ public class PlayerControler : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Triggered by: " + other.gameObject.name); // Wyświetla nazwę obiektu kolidującego
+
         if(other.gameObject.tag == "Coin")
         {
+            Debug.Log("Coin collected!"); // Potwierdzenie zebrania monety
             other.gameObject.SetActive(false);
             score++;
             inventory ++;
