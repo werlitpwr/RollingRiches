@@ -3651,7 +3651,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   jumpForce: 10
-  winScore: 6
+  winScore: 2
   TextWin: {fileID: 118662173}
 --- !u!1 &1578163981
 GameObject:
