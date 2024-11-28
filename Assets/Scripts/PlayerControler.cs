@@ -70,8 +70,9 @@ public class PlayerControler : MonoBehaviour
             inventory ++;
 
             levelInfo.UpdateScore(score);
+            PlayerPrefs.SetInt("PlayerScore", score);
             PlayerPrefs.SetInt("PlayerInventory", inventory);
-
+            PlayerPrefs.Save();
             if(score >= winScore)
             {
                 TextWin.SetActive(true);
