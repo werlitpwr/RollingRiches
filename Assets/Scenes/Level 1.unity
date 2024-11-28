@@ -4532,7 +4532,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   jumpForce: 10
-  winScore: 1
+  winScore: 6
   levelInfo: {fileID: 180370012}
   TextWin: {fileID: 118662173}
   LevelText: {fileID: 738181867}
