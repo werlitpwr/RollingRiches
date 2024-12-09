@@ -4410,8 +4410,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1555064132}
   serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
+  m_Mass: 2
+  m_Drag: 2
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -4530,9 +4530,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2b771336792b4d23aa4669a2e1aa861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  jumpForce: 10
-  winScore: 6
+  speed: 50
+  jumpForce: 20
+  winScore: 2
   levelInfo: {fileID: 180370012}
   TextWin: {fileID: 118662173}
   LevelText: {fileID: 738181867}
@@ -4732,7 +4732,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 574d24d6f2fe2ed44a3e0a44c13aa6a1, type: 2}
+  - {fileID: 2100000, guid: 0f140a16dd1dbe8488e9fd533b836dc8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5521,7 +5521,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 574d24d6f2fe2ed44a3e0a44c13aa6a1, type: 2}
+  - {fileID: 2100000, guid: 0f140a16dd1dbe8488e9fd533b836dc8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
