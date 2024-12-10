@@ -7,6 +7,14 @@ public class GhostController : MonoBehaviour
     public float speed = 3f; // Prędkość ducha
     public float stoppingDistance = 1f; // Minimalna odległość od gracza
 
+    private AudioSource audioSource; // Referencja do komponentu AudioSource
+
+    private void Start()
+    {
+        // Znajdź komponent AudioSource na obiekcie ducha
+        audioSource = GetComponent<AudioSource>();
+    }
+
     private void Update()
     {
         // Oblicz odległość między duchem a graczem
@@ -26,14 +34,24 @@ public class GhostController : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Debug.Log("Game Over");
-            StartCoroutine(LoadSceneWithDelay(1f)); // Uruchamiamy Coroutine z opóźnieniem 1 sekundy
+            if (audioSource != null)
+            {
+                audioSource.Play(); // Odtwarzamy dźwięk natychmiast po kontakcie
+            }
+            StartCoroutine(WaitForSoundAndReload()); // Czekamy na zakończenie dźwięku
         }
     }
 
-    // Coroutine do załadowania sceny po opóźnieniu
-    private IEnumerator LoadSceneWithDelay(float delay)
+    // Coroutine do załadowania sceny po zakończeniu dźwięku i dodatkowym opóźnieniu
+    private IEnumerator WaitForSoundAndReload()
     {
-        yield return new WaitForSeconds(delay); // Czekamy określony czas (1 sekunda)
+        // Czekamy, aż dźwięk się skończy
+        yield return new WaitForSeconds(audioSource.clip.length); // Czekamy na długość dźwięku
+
+        // Dodatkowe 0.5 sekundy opóźnienia po zakończeniu dźwięku
+        yield return new WaitForSeconds(0.5f); // Czekamy dodatkowe 0.5 sekundy
+
+        // Załadowanie nowej sceny
         UnityEngine.SceneManagement.SceneManager.LoadScene("Level 1"); // Restartujemy scenę
     }
 }
