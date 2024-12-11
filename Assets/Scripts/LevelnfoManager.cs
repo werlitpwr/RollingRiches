@@ -1,5 +1,5 @@
 using UnityEngine;
-using TMPro; 
+using TMPro;
 using UnityEngine.SceneManagement;
 
 public class LevelInfoManager : MonoBehaviour
@@ -9,7 +9,7 @@ public class LevelInfoManager : MonoBehaviour
     public TextMeshProUGUI coinsNeededText; // Reference to the coins needed text
 
     private int score = 0;
-    private int winScore = 6; // Adjust this per level
+    private int winScore; // This will change per level
 
     void Start()
     {
@@ -18,6 +18,9 @@ public class LevelInfoManager : MonoBehaviour
 
         // Display the user's name
         userNameText.text = $"User: {playerName}";
+
+        // Set winScore based on the active level
+        SetWinScoreForLevel();
 
         // Initialize the HUD
         UpdateScoreText();
@@ -40,5 +43,27 @@ public class LevelInfoManager : MonoBehaviour
     {
         int coinsNeeded = Mathf.Max(0, winScore - score);
         coinsNeededText.text = $"Coins Needed: {coinsNeeded}";
+    }
+
+    private void SetWinScoreForLevel()
+    {
+        // Check the current scene's name (or build index)
+        string currentSceneName = SceneManager.GetActiveScene().name;
+
+        switch (currentSceneName)
+        {
+            case "Level 1":
+                winScore = 2;
+                break;
+            case "Level 2":
+                winScore = 6;
+                break;
+            case "Level 3":
+                winScore = 10;
+                break;
+            default:
+                winScore = 5; // Default value if no specific level is matched
+                break;
+        }
     }
 }
