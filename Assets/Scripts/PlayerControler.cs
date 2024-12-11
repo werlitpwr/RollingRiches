@@ -21,13 +21,14 @@ public class PlayerControler : MonoBehaviour
     bool isGrounded;
     public GameObject TextWin;
     public TextMeshProUGUI LevelText;
-
+    public AudioSource collectSound;
     void Start()
     {
         score = 0;
         inventory = PlayerPrefs.GetInt("PlayerInventory", 0);
 
         StartCoroutine(DisplayLevelMessage());
+        collectSound = GetComponent<AudioSource>();
     }
     private void Awake()
     {
@@ -61,11 +62,15 @@ public class PlayerControler : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Triggered by: " + other.gameObject.name); // Wyświetla nazwę obiektu kolidującego
+        Debug.Log("Triggered by: " + other.gameObject.name);
 
         if(other.gameObject.tag == "Coin")
         {
-            Debug.Log("Coin collected!"); // Potwierdzenie zebrania monety
+            if (collectSound != null)
+            {
+                collectSound.Play();
+            }
+            
             other.gameObject.SetActive(false);
             score++;
             inventory ++;

@@ -10,7 +10,7 @@ public class GhostController : MonoBehaviour
     public float speed2lvl = 2f; 
     public float stoppingDistance = 1f; // Minimalna odległość od gracza
 
-    private AudioSource audioSource; // Referencja do komponentu AudioSource
+    private AudioSource audioSource;
 
     private void Start()
     {
