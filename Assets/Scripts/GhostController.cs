@@ -1,35 +1,30 @@
-using System.Collections; // Dodajemy dla Coroutine
+using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement; // Dodajemy tę przestrzeń nazw, aby korzystać z SceneManager
+using UnityEngine.SceneManagement;
 
 public class GhostController : MonoBehaviour
 {
-    public Transform player; // Referencja do gracza (kulki)
+    public Transform player; // ball ref
     public float speed;
-    public float speed3lvl = 3f; 
+    public float speed3lvl = 4f; 
     public float speed2lvl = 2f; 
-    public float stoppingDistance = 1f; // Minimalna odległość od gracza
+    public float stoppingDistance = 1f; //min player - ghost distance
 
     private AudioSource audioSource;
 
     private void Start()
     {
-        // Znajdź komponent AudioSource na obiekcie ducha
+        // find on ghost object
         audioSource = GetComponent<AudioSource>();
-        
-        // Pobierz aktualną scenę
         Scene currentScene = SceneManager.GetActiveScene();
     }
 
     private void Update()
     {   
-        // Oblicz odległość między duchem a graczem
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // Jeśli odległość jest większa niż stoppingDistance, poruszaj się w stronę gracza
         if (distanceToPlayer > stoppingDistance)
         {
-            // Pobierz aktualną scenę
             Scene currentScene = SceneManager.GetActiveScene();
 
             if (currentScene.name == "Level 2")
@@ -41,7 +36,7 @@ public class GhostController : MonoBehaviour
                 speed = speed3lvl;
             }
 
-            // Poruszaj się w stronę gracza
+            // move in the ball direction
             Vector3 direction = (player.position - transform.position).normalized;
             transform.position += direction * speed * Time.deltaTime;
         }
@@ -49,28 +44,26 @@ public class GhostController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Jeśli duch zderzy się z graczem
+        // collision shost - ball
         if (other.CompareTag("Player"))
         {
             Debug.Log("Game Over");
             if (audioSource != null)
             {
-                audioSource.Play(); // Odtwarzamy dźwięk natychmiast po kontakcie
+                audioSource.Play(); 
             }
-            StartCoroutine(WaitForSoundAndReload()); // Czekamy na zakończenie dźwięku
+            StartCoroutine(WaitForSoundAndReload()); // wait for the sound end
         }
     }
 
-    // Coroutine do załadowania sceny po zakończeniu dźwięku i dodatkowym opóźnieniu
+    // Coroutine for load page after ending of the sound
     private IEnumerator WaitForSoundAndReload()
     {
-        // Czekamy, aż dźwięk się skończy
-        yield return new WaitForSeconds(audioSource.clip.length); // Czekamy na długość dźwięku
+        yield return new WaitForSeconds(audioSource.clip.length); 
 
-        // Dodatkowe 0.5 sekundy opóźnienia po zakończeniu dźwięku
-        yield return new WaitForSeconds(0.5f); // Czekamy dodatkowe 0.5 sekundy
+        yield return new WaitForSeconds(0.5f); 
 
         // Załadowanie nowej sceny
-        SceneManager.LoadScene("Level 1"); // Restartujemy scenę
+        SceneManager.LoadScene("Level 1");
     }
 }
