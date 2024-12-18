@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Coin
   - GroundLvl1
+  - Ghost
   layers:
   - Default
   - TransparentFX

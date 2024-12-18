@@ -43,21 +43,35 @@ public class MainMenu : MonoBehaviour
     {
         Debug.Log("Player name is empty. Please enter a valid name.");
     }
-}
-
+    }
 
     public void OnPlaySavedGame()
     {
-        if (PlayerPrefs.HasKey("PlayerInventory"))
+        int savedScene = PlayerPrefs.GetInt("SavedLevel", 1);
+
+        if (PlayerPrefs.HasKey("PlayerPosX") && PlayerPrefs.HasKey("PlayerPosY") && PlayerPrefs.HasKey("PlayerPosZ"))
         {
-            int savedLevel = PlayerPrefs.GetInt("SavedLevel", 1); 
-            SceneManager.LoadScene(savedLevel);
+            SceneManager.sceneLoaded += RestorePlayerPosition; // Attach event to restore position after scene loads
         }
-        else
+
+        SceneManager.LoadScene(savedScene);
+    }
+
+    private void RestorePlayerPosition(Scene scene, LoadSceneMode mode)
+    {
+        // Retrieve saved position
+        float posX = PlayerPrefs.GetFloat("PlayerPosX", 0f);
+        float posY = PlayerPrefs.GetFloat("PlayerPosY", 1f); // Default to a safe height
+        float posZ = PlayerPrefs.GetFloat("PlayerPosZ", 0f);
+
+        // Find the PlayerController in the loaded scene
+        PlayerControler player = FindObjectOfType<PlayerControler>();
+        if (player != null)
         {
-            Debug.Log("No saved game found. Starting a new game.");
-            SceneManager.LoadScene("Level 1");
+            player.transform.position = new Vector3(posX, posY, posZ);
         }
+
+        SceneManager.sceneLoaded -= RestorePlayerPosition; // Detach the event after restoring
     }
     
     
