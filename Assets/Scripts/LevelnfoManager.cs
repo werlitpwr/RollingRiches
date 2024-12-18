@@ -1,15 +1,19 @@
 using UnityEngine;
-using TMPro;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class LevelInfoManager : MonoBehaviour
 {
-    public TextMeshProUGUI userNameText; // Reference to the user name text
-    public TextMeshProUGUI scoreText; // Reference to the score text
-    public TextMeshProUGUI coinsNeededText; // Reference to the coins needed text
+    public TextMeshProUGUI userNameText;    // Text element for displaying the username
+    public TextMeshProUGUI scoreText;       // Text element for displaying the score
+    public TextMeshProUGUI coinsNeededText; // Text element for displaying coins needed
+    public TextMeshProUGUI livesText;       // Text element for displaying lives
 
-    private int score = 0;
-    private int winScore; // This will change per level
+    private int winScore = 5;  // Coins needed to win
+    private int score = 0;      // Player's current score
+    private int lives = 3;      // Player's starting lives
+
+    public int WinScore => winScore; // Public property to access winScore
 
     void Start()
     {
@@ -19,12 +23,14 @@ public class LevelInfoManager : MonoBehaviour
         // Display the user's name
         userNameText.text = $"User: {playerName}";
 
-        // Set winScore based on the active level
+        // Load lives from PlayerPrefs
+        lives = PlayerPrefs.GetInt("PlayerLives", 3);
         SetWinScoreForLevel();
 
         // Initialize the HUD
         UpdateScoreText();
         UpdateCoinsNeededText();
+        UpdateLivesText();
     }
 
     public void UpdateScore(int newScore)
@@ -32,6 +38,12 @@ public class LevelInfoManager : MonoBehaviour
         score = newScore;
         UpdateScoreText();
         UpdateCoinsNeededText();
+    }
+
+    public void UpdateLives(int newLives)
+    {
+        lives = newLives;
+        UpdateLivesText();
     }
 
     private void UpdateScoreText()
@@ -43,6 +55,11 @@ public class LevelInfoManager : MonoBehaviour
     {
         int coinsNeeded = Mathf.Max(0, winScore - score);
         coinsNeededText.text = $"Coins Needed: {coinsNeeded}";
+    }
+
+    private void UpdateLivesText()
+    {
+        livesText.text = $"Lives: {lives}";
     }
 
     private void SetWinScoreForLevel()
