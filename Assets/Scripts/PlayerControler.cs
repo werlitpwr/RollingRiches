@@ -199,4 +199,9 @@ public class PlayerControler : MonoBehaviour
    
         Time.timeScale = 0f; // Pause the game so the player can see the message
     }
+    public void BackToMenu()
+    {
+        Time.timeScale = 1f; // Resume the game if it was paused
+        SceneManager.LoadScene("MainMenu"); // Load the Menu scene
+    }
 }

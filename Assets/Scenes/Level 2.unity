@@ -7590,8 +7590,8 @@ MonoBehaviour:
   TextWin: {fileID: 118662173}
   LevelText: {fileID: 1047361465}
   GameOverPanel: {fileID: 1648866998}
-  WinnerPanel: {fileID: 0}
-  WinnerText: {fileID: 0}
+  WinnerPanel: {fileID: 105568722}
+  WinnerText: {fileID: 1777462841}
   collectSound: {fileID: 1555064139}
   hasCollectedCoin: 0
 --- !u!82 &1555064139
@@ -8380,8 +8380,8 @@ MonoBehaviour:
   TextWin: {fileID: 118662173}
   LevelText: {fileID: 1047361465}
   GameOverPanel: {fileID: 1648866998}
-  WinnerPanel: {fileID: 0}
-  WinnerText: {fileID: 0}
+  WinnerPanel: {fileID: 105568722}
+  WinnerText: {fileID: 1777462841}
   collectSound: {fileID: 0}
   hasCollectedCoin: 0
 --- !u!1 &1729823656
