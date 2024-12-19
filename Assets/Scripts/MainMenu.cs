@@ -3,55 +3,54 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+
 public class MainMenu : MonoBehaviour
 {
     public GameObject SettingsPanel;
-    public GameObject NameInputPanel; 
+    public GameObject NameInputPanel;
     public InputField nameInputField;
 
-    public void Start()
+    void Start()
     {
-        SettingsPanel.SetActive(false); 
+        SettingsPanel.SetActive(false);
         NameInputPanel.SetActive(false);
     }
+
     public void OnPlayNewGame()
     {
-        PlayerPrefs.DeleteAll();
-        PlayerPrefs.Save(); 
-        
-        NameInputPanel.SetActive(true);
+        PlayerPrefs.DeleteAll(); // Clear all saved data
+        PlayerPrefs.Save();
 
+        NameInputPanel.SetActive(true); // Show name input panel
     }
 
     public void OnSubmitName()
     {
-    string playerName = nameInputField.text;
+        string playerName = nameInputField.text;
 
-    if (!string.IsNullOrEmpty(playerName))
-    {
-        // Clear all previous progress
-        PlayerPrefs.DeleteAll();
+        if (!string.IsNullOrEmpty(playerName))
+        {
+            // Save the player's name
+            PlayerPrefs.SetString("PlayerName", playerName);
+            PlayerPrefs.Save();
 
-        // Save the player's name after clearing progress
-        PlayerPrefs.SetString("PlayerName", playerName);
-        PlayerPrefs.Save(); // Save the changes
-
-        // Load the first level
-        SceneManager.LoadScene("Level 1");
-    }
-    else
-    {
-        Debug.Log("Player name is empty. Please enter a valid name.");
-    }
+            // Load the tutorial level (Level 0)
+            SceneManager.LoadScene("Level 0");
+        }
+        else
+        {
+            Debug.Log("Player name is empty. Please enter a valid name.");
+        }
     }
 
     public void OnPlaySavedGame()
     {
+        // Load the saved level or default to Level 1
         int savedScene = PlayerPrefs.GetInt("SavedLevel", 1);
 
         if (PlayerPrefs.HasKey("PlayerPosX") && PlayerPrefs.HasKey("PlayerPosY") && PlayerPrefs.HasKey("PlayerPosZ"))
         {
-            SceneManager.sceneLoaded += RestorePlayerPosition; // Attach event to restore position after scene loads
+            SceneManager.sceneLoaded += RestorePlayerPosition; // Attach event to restore position
         }
 
         SceneManager.LoadScene(savedScene);
@@ -71,22 +70,21 @@ public class MainMenu : MonoBehaviour
             player.transform.position = new Vector3(posX, posY, posZ);
         }
 
-        SceneManager.sceneLoaded -= RestorePlayerPosition; // Detach the event after restoring
+        SceneManager.sceneLoaded -= RestorePlayerPosition; // Detach the event
     }
-    
-    
-    public void OnQuitButton ()
+
+    public void OnQuitButton()
     {
         Application.Quit();
     }
 
     public void OnSettingsButton()
     {
-        SettingsPanel.SetActive(true); 
+        SettingsPanel.SetActive(true);
     }
 
     public void CloseSettings()
     {
-        SettingsPanel.SetActive(false); 
+        SettingsPanel.SetActive(false);
     }
 }
