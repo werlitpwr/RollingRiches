@@ -2310,6 +2310,8 @@ MonoBehaviour:
   WinnerText: {fileID: 1481990266}
   collectSound: {fileID: 0}
   hasCollectedCoin: 0
+  backToMenuButtonGameOver: {fileID: 353692106}
+  backToMenuButtonWinner: {fileID: 1288087696}
 --- !u!1 &542490570
 GameObject:
   m_ObjectHideFlags: 0
@@ -6787,6 +6789,8 @@ MonoBehaviour:
   WinnerText: {fileID: 1481990266}
   collectSound: {fileID: 0}
   hasCollectedCoin: 0
+  backToMenuButtonGameOver: {fileID: 353692106}
+  backToMenuButtonWinner: {fileID: 1288087696}
 --- !u!114 &1447959202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7991,6 +7995,8 @@ MonoBehaviour:
   WinnerText: {fileID: 1481990266}
   collectSound: {fileID: 1555064139}
   hasCollectedCoin: 0
+  backToMenuButtonGameOver: {fileID: 353692106}
+  backToMenuButtonWinner: {fileID: 1288087696}
 --- !u!82 &1555064139
 AudioSource:
   m_ObjectHideFlags: 0

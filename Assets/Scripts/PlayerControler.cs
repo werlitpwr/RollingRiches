@@ -1,7 +1,8 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerControler : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class PlayerControler : MonoBehaviour
     public TextMeshProUGUI WinnerText; // Reference to the Winner Text (congratulations message)
     public AudioSource collectSound;
     public bool hasCollectedCoin = false;  // Flag to track if the player collected a coin
+    public Button backToMenuButtonGameOver; // Button in Game Over panel
+    public Button backToMenuButtonWinner;  // Button in Winner panel
 
     void Start()
     {
@@ -39,6 +42,12 @@ public class PlayerControler : MonoBehaviour
         collectSound = GetComponent<AudioSource>();
         GameOverPanel.SetActive(false);
         WinnerPanel.SetActive(false); // Initially hide the Winner Panel
+
+        if (backToMenuButtonGameOver != null)
+            backToMenuButtonGameOver.onClick.AddListener(BackToMenu);
+
+        if (backToMenuButtonWinner != null)
+            backToMenuButtonWinner.onClick.AddListener(BackToMenu);
     }
 
     private void Awake()
@@ -198,5 +207,10 @@ public class PlayerControler : MonoBehaviour
         WinnerPanel.SetActive(true); // Show the Winner Panel
    
         Time.timeScale = 0f; // Pause the game so the player can see the message
+    }
+    public void BackToMenu()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("MainMenu");
     }
 }
