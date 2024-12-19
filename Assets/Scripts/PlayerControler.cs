@@ -23,6 +23,8 @@ public class PlayerControler : MonoBehaviour
     public TextMeshProUGUI LevelText;
     public GameObject GameOverPanel;
     public AudioSource collectSound;
+    public bool hasCollectedCoin = false;  // Flag to track if the player collected a coin
+
 
     void Start()
     {
@@ -92,6 +94,7 @@ public class PlayerControler : MonoBehaviour
             {
                 collectSound.Play();
             }
+            hasCollectedCoin = true;
 
             other.gameObject.SetActive(false);
             score++;
@@ -135,14 +138,17 @@ public class PlayerControler : MonoBehaviour
     private IEnumerator DisplayLevelMessage()
     {
         int levelNumber = SceneManager.GetActiveScene().buildIndex;
+        if (levelNumber != 0 )
+        {
 
-        LevelText.text = $"LEVEL {levelNumber}";
+            LevelText.text = $"LEVEL {levelNumber}";
 
-        LevelText.gameObject.SetActive(true);
+            LevelText.gameObject.SetActive(true);
 
-        yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(2f);
 
-        LevelText.gameObject.SetActive(false);
+            LevelText.gameObject.SetActive(false);
+        }
     }
 
     private void OnCollisionEnter(Collision collision)

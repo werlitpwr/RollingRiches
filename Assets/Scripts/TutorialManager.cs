@@ -1,75 +1,108 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class TutorialManager : MonoBehaviour
 {
-    public GameObject tutorialPanel;   // The panel that holds the tutorial UI elements
-    public TextMeshProUGUI tutorialText; // The text component that displays tutorial instructions
-    public Button skipButton;           // The button that lets the player skip the tutorial
+    public TextMeshProUGUI tutorialText; // Reference to the tutorial text
+    public Button nextButton;
+    public Button backButton;
+    public Button skipButton;
+    public GameObject panel;
+    public PlayerControler playerControler;
 
-    private int tutorialStep = 0;       // Tracks the current tutorial step
-    private string[] tutorialMessages;  // Array of tutorial messages
+    private int currentStep = 0;
 
-    void Start()
+    private string[] messages = {
+        "Welcome to the game! Meet Ambi, the most ambitious ball you'll ever know.",
+        "Ambi dreams of becoming the richest ball in the land! Let's learn how to help him.",
+        "Use the arrow keys or WASD to move Ambi around. Try moving now!",
+        "Press SPACE to make Ambi jump over obstacles. Give it a try!",
+        "Collect coins to earn points! Help Ambi collect the coin in front of you.",
+        "Watch out for ghosts! Avoid them to keep Ambi safe.",
+        "Be careful not to fall off the plane, or Ambi will lose a life!",
+        "Great job! You're ready to help Ambi on his journey. Good luck!"
+    };
+
+    
+    private void Start()
     {
-        // Define the tutorial messages
-        tutorialMessages = new string[]
-        {
-            "Welcome to the game! Let's get started.",
-            "Use the arrow keys or WASD to move.",
-            "Press SPACE to jump.",
-            "Collect coins to earn points!",
-            "Good luck! You can skip this tutorial at any time."
-        };
+        panel.SetActive(true);
+        tutorialText.text = messages[currentStep];
 
-        // Initially hide the tutorial panel
-        tutorialPanel.SetActive(true);
-
-        // Set the first tutorial message
-        ShowTutorialMessage();
-
-        // Add listener to skip button
+        nextButton.onClick.AddListener(NextMessage);
+        backButton.onClick.AddListener(PreviousMessage);
         skipButton.onClick.AddListener(SkipTutorial);
+
+        UpdateButtonStates();
     }
 
-    void Update()
+    private void Update()
     {
-        // Wait for player input to proceed to the next step
-        if (tutorialStep < tutorialMessages.Length)
+        // Check for specific player actions and update the tutorial step
+        if (currentStep == 2 && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)))
         {
-            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
-            {
-                tutorialStep++;
-                ShowTutorialMessage();
-            }
+            NextMessage();
+        }
+
+        if (currentStep == 3 && Input.GetKeyDown(KeyCode.Space))
+        {
+            NextMessage();
+        }
+
+        if (currentStep == 4 && CheckCoinCollected())
+        {
+            NextMessage();
         }
     }
 
-    // Show the current tutorial message
-    void ShowTutorialMessage()
+    private void NextMessage()
     {
-        if (tutorialStep < tutorialMessages.Length)
+        if (currentStep < messages.Length - 1)
         {
-            tutorialText.text = tutorialMessages[tutorialStep];
+            currentStep++;
+            tutorialText.text = messages[currentStep];
         }
-        else
+
+        UpdateButtonStates();
+
+        if (currentStep == messages.Length - 1)
         {
             EndTutorial();
         }
     }
 
-    // End the tutorial and hide the tutorial panel
-    void EndTutorial()
+    private void PreviousMessage()
     {
-        tutorialPanel.SetActive(false);  // Hide the tutorial panel
-        Time.timeScale = 1f;  // Resume the game time (in case it was paused during the tutorial)
+        if (currentStep > 0)
+        {
+            currentStep--;
+            tutorialText.text = messages[currentStep];
+        }
+
+        UpdateButtonStates();
     }
 
-    // Skip the tutorial
-    void SkipTutorial()
+    private void SkipTutorial()
     {
-        tutorialStep = tutorialMessages.Length;  // Skip to the end of the tutorial
-        ShowTutorialMessage();
+        EndTutorial();
+    }
+
+    private void EndTutorial()
+    {
+        SceneManager.LoadScene("Level 1");
+    }
+
+    private void UpdateButtonStates()
+    {
+        backButton.interactable = currentStep > 0;
+        nextButton.interactable = currentStep < messages.Length - 1;
+    }
+
+    private bool CheckCoinCollected()
+    {
+        // Check if the player has collected a coin
+        return playerControler.hasCollectedCoin;
     }
 }
