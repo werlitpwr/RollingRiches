@@ -118,7 +118,7 @@ public class PlayerControler : MonoBehaviour
             // Check if the player has won the level (score >= winScore)
             if (score >= winScore)
             {
-                if (SceneManager.GetActiveScene().buildIndex == 3) // Check if it's level 3
+                if (SceneManager.GetActiveScene().buildIndex == 4) // Check if it's level 3
                 {
                     ShowWinnerPanel(); // Show the Winner Panel
                 }
@@ -156,7 +156,7 @@ public class PlayerControler : MonoBehaviour
 
     private IEnumerator DisplayLevelMessage()
     {
-        int levelNumber = SceneManager.GetActiveScene().buildIndex;
+        int levelNumber = SceneManager.GetActiveScene().buildIndex - 1 ;
         if (levelNumber != 0)
         {
             LevelText.text = $"LEVEL {levelNumber}";
