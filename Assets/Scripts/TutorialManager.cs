@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -11,8 +12,9 @@ public class TutorialManager : MonoBehaviour
     public Button skipButton;
     public GameObject panel;
     public PlayerControler playerControler;
-
+    public GameObject ghostObject;
     private int currentStep = 0;
+    public GameObject playerBall;
 
     private string[] messages = {
         "Welcome to the game! Meet Ambi, the most ambitious ball you'll ever know.",
@@ -34,7 +36,6 @@ public class TutorialManager : MonoBehaviour
         nextButton.onClick.AddListener(NextMessage);
         backButton.onClick.AddListener(PreviousMessage);
         skipButton.onClick.AddListener(SkipTutorial);
-
         UpdateButtonStates();
     }
 
@@ -55,6 +56,15 @@ public class TutorialManager : MonoBehaviour
         {
             NextMessage();
         }
+        if (currentStep == 5 )
+        {
+            PositionGhostNearPlayer();
+            
+        }
+        if (currentStep == 6 )
+        {
+            ghostObject.SetActive(false); 
+        }
     }
 
     private void NextMessage()
@@ -69,7 +79,7 @@ public class TutorialManager : MonoBehaviour
 
         if (currentStep == messages.Length - 1)
         {
-            EndTutorial();
+            StartCoroutine(WaitAndEndTutorial());
         }
     }
 
@@ -104,5 +114,29 @@ public class TutorialManager : MonoBehaviour
     {
         // Check if the player has collected a coin
         return playerControler.hasCollectedCoin;
+    }
+    private void PositionGhostNearPlayer()
+    {
+        // Calculate a random offset for the ghost's position relative to the player
+        float offsetX = 2; // Random horizontal distance (adjust as needed)
+        float offsetZ = 2; // Random depth distance (adjust as needed)
+
+        // Randomly choose whether the ghost should be to the left or right of the player
+        offsetX *= Random.Range(0, 2) == 0 ? 1 : -1; // Flip the direction randomly
+
+        // Position the ghost
+        Vector3 ghostPosition = new Vector3(
+            playerBall.transform.position.x + offsetX, 
+            playerBall.transform.position.y, 
+            playerBall.transform.position.z + offsetZ
+        );
+
+        ghostObject.transform.position = ghostPosition; // Set the ghost's position
+        ghostObject.SetActive(true);
+    }
+    private IEnumerator WaitAndEndTutorial()
+    {
+        yield return new WaitForSeconds(2f); // Wait for 2 seconds
+        EndTutorial(); // Call EndTutorial after the wait
     }
 }

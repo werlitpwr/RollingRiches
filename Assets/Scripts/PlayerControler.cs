@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -22,9 +21,10 @@ public class PlayerControler : MonoBehaviour
     public GameObject TextWin;
     public TextMeshProUGUI LevelText;
     public GameObject GameOverPanel;
+    public GameObject WinnerPanel; // Reference to the Winner Panel
+    public TextMeshProUGUI WinnerText; // Reference to the Winner Text (congratulations message)
     public AudioSource collectSound;
     public bool hasCollectedCoin = false;  // Flag to track if the player collected a coin
-
 
     void Start()
     {
@@ -38,6 +38,7 @@ public class PlayerControler : MonoBehaviour
         StartCoroutine(DisplayLevelMessage());
         collectSound = GetComponent<AudioSource>();
         GameOverPanel.SetActive(false);
+        WinnerPanel.SetActive(false); // Initially hide the Winner Panel
     }
 
     private void Awake()
@@ -104,10 +105,19 @@ public class PlayerControler : MonoBehaviour
             PlayerPrefs.SetInt("PlayerScore", score);
             PlayerPrefs.SetInt("PlayerInventory", inventory);
             PlayerPrefs.Save();
+
+            // Check if the player has won the level (score >= winScore)
             if (score >= winScore)
             {
-                TextWin.SetActive(true);
-                StartCoroutine(WaitAndLoadNextLevel());
+                if (SceneManager.GetActiveScene().buildIndex == 3) // Check if it's level 3
+                {
+                    ShowWinnerPanel(); // Show the Winner Panel
+                }
+                else
+                {
+                    TextWin.SetActive(true);
+                    StartCoroutine(WaitAndLoadNextLevel());
+                }
             }
         }
         if (other.gameObject.CompareTag("Ghost"))
@@ -138,11 +148,9 @@ public class PlayerControler : MonoBehaviour
     private IEnumerator DisplayLevelMessage()
     {
         int levelNumber = SceneManager.GetActiveScene().buildIndex;
-        if (levelNumber != 0 )
+        if (levelNumber != 0)
         {
-
             LevelText.text = $"LEVEL {levelNumber}";
-
             LevelText.gameObject.SetActive(true);
 
             yield return new WaitForSeconds(2f);
@@ -183,5 +191,12 @@ public class PlayerControler : MonoBehaviour
 
         PlayerPrefs.Save();
         Debug.Log("Game Saved!");
+    }
+
+    private void ShowWinnerPanel()
+    {
+        WinnerPanel.SetActive(true); // Show the Winner Panel
+   
+        Time.timeScale = 0f; // Pause the game so the player can see the message
     }
 }
