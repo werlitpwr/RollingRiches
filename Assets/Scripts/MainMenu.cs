@@ -48,29 +48,43 @@ public class MainMenu : MonoBehaviour
         // Load the saved level or default to Level 1
         int savedScene = PlayerPrefs.GetInt("SavedLevel", 1);
 
-        if (PlayerPrefs.HasKey("PlayerPosX") && PlayerPrefs.HasKey("PlayerPosY") && PlayerPrefs.HasKey("PlayerPosZ"))
-        {
-            SceneManager.sceneLoaded += RestorePlayerPosition; // Attach event to restore position
-        }
+        // Attach the event to restore the player's position
+        SceneManager.sceneLoaded += RestorePlayerPosition;
 
         SceneManager.LoadScene(savedScene);
+
+        Debug.Log("Loading saved game...");
     }
 
     private void RestorePlayerPosition(Scene scene, LoadSceneMode mode)
     {
+        Debug.Log("RestorePlayerPosition called for scene: " + scene.name);
+
         // Retrieve saved position
         float posX = PlayerPrefs.GetFloat("PlayerPosX", 0f);
         float posY = PlayerPrefs.GetFloat("PlayerPosY", 1f); // Default to a safe height
         float posZ = PlayerPrefs.GetFloat("PlayerPosZ", 0f);
+
+        Debug.Log($"Restoring position to: ({posX}, {posY}, {posZ})");
 
         // Find the PlayerController in the loaded scene
         PlayerControler player = FindObjectOfType<PlayerControler>();
         if (player != null)
         {
             player.transform.position = new Vector3(posX, posY, posZ);
+
+            Debug.Log("Player position restored successfully.");
+
+            // Optionally restore other saved data if needed
+            player.RestoreSavedData();
+        }
+        else
+        {
+            Debug.LogError("PlayerControler not found in the scene.");
         }
 
-        SceneManager.sceneLoaded -= RestorePlayerPosition; // Detach the event
+        // Detach the event to avoid duplicate calls
+        SceneManager.sceneLoaded -= RestorePlayerPosition;
     }
 
     public void OnQuitButton()

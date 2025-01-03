@@ -22,32 +22,63 @@ public class PlayerControler : MonoBehaviour
     public GameObject TextWin;
     public TextMeshProUGUI LevelText;
     public GameObject GameOverPanel;
-    public GameObject WinnerPanel; // Reference to the Winner Panel
-    public TextMeshProUGUI WinnerText; // Reference to the Winner Text (congratulations message)
-    public AudioSource collectSound;
-    public bool hasCollectedCoin = false;  // Flag to track if the player collected a coin
-    public Button backToMenuButtonGameOver; // Button in Game Over panel
-    public Button backToMenuButtonWinner;  // Button in Winner panel
+    public GameObject WinnerPanel; 
+    public TextMeshProUGUI WinnerText; 
+    public AudioSource collectCoinSound;
+    public AudioSource fallSound; // Add an AudioSource for the falling sound
+    public bool hasCollectedCoin = false; 
+    public bool hasFallen = false;
+    public Button backToMenuButtonGameOver; 
+    public Button backToMenuButtonWinner;  
+    private Vector3 startingPosition;
 
     void Start()
     {
+        if (PlayerPrefs.HasKey("PlayerPosX") && PlayerPrefs.HasKey("PlayerPosY") && PlayerPrefs.HasKey("PlayerPosZ"))
+        {
+            float savedX = PlayerPrefs.GetFloat("PlayerPosX");
+            float savedY = PlayerPrefs.GetFloat("PlayerPosY");
+            float savedZ = PlayerPrefs.GetFloat("PlayerPosZ");
+
+            transform.position = new Vector3(savedX, savedY, savedZ);
+            Debug.Log($"Player position restored to: ({savedX}, {savedY}, {savedZ})");
+        }
+        else
+        {
+            Debug.Log("No saved position found. Starting at default position.");
+        }
+        hasFallen = false;
+        if (collectCoinSound == null || fallSound == null)
+        {
+            AudioSource[] audioSources = GetComponents<AudioSource>();
+            if (audioSources.Length > 1)
+            {
+                collectCoinSound = audioSources[0];
+                fallSound = audioSources[1];
+            }
+            else
+            {
+                Debug.LogError("Not enough AudioSources attached to the GameObject.");
+            }
+        }
+
         score = 0;
         inventory = PlayerPrefs.GetInt("PlayerInventory", 0);
         lives = PlayerPrefs.GetInt("PlayerLives", 3);
 
         // Get winScore from LevelInfoManager
         winScore = levelInfo.WinScore;  // Access WinScore here
-
-        StartCoroutine(DisplayLevelMessage());
-        collectSound = GetComponent<AudioSource>();
         GameOverPanel.SetActive(false);
         WinnerPanel.SetActive(false); // Initially hide the Winner Panel
-
+        collectCoinSound = GetComponent<AudioSource>();
+        fallSound = GetComponent<AudioSource>() ;
+        StartCoroutine(DisplayLevelMessage());
         if (backToMenuButtonGameOver != null)
             backToMenuButtonGameOver.onClick.AddListener(BackToMenu);
 
         if (backToMenuButtonWinner != null)
             backToMenuButtonWinner.onClick.AddListener(BackToMenu);
+
     }
 
     private void Awake()
@@ -57,31 +88,23 @@ public class PlayerControler : MonoBehaviour
 
     void Update()
     {
-        // Restart the scene if the player falls below a certain height
-        if (transform.position.y < -5f)
+        if (transform.position.y < -1f && !hasFallen)
         {
-            lives--;
-            score = 0;
-            PlayerPrefs.SetInt("PlayerScore", score);
-            PlayerPrefs.SetInt("PlayerLives", lives);
-            PlayerPrefs.Save();
+            hasFallen = true; // Set the flag to prevent multiple triggers
 
-            if (lives < 1)
+            // Play the fall sound once
+            if (fallSound != null)
             {
-                GameOverPanel.SetActive(true); // Show the GameOverPanel
-                Time.timeScale = 0f; // Pause the game
+                fallSound.Play();
             }
-            else
-            {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            }
+            StartCoroutine(HandleFall());
+            
         }
-
-        // Check for jump input and if the player is grounded
+        
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); //up is shorthand for writing Vector3(0, 1, 0)
-            isGrounded = false; // Prevent multiple jumps until landing
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); 
+            isGrounded = false; 
         }
     }
 
@@ -100,9 +123,9 @@ public class PlayerControler : MonoBehaviour
 
         if (other.gameObject.tag == "Coin")
         {
-            if (collectSound != null)
+            if (collectCoinSound != null)
             {
-                collectSound.Play();
+                collectCoinSound.Play();
             }
             hasCollectedCoin = true;
 
@@ -135,6 +158,8 @@ public class PlayerControler : MonoBehaviour
             PlayerPrefs.SetInt("PlayerLives", lives);
             PlayerPrefs.Save();
 
+            DeletePositionPrefs();
+
             if (lives < 1)
             {
                 GameOverPanel.SetActive(true); // Show the GameOverPanel
@@ -147,6 +172,7 @@ public class PlayerControler : MonoBehaviour
             }
         }
     }
+
 
     private IEnumerator WaitAndLoadNextLevel()
     {
@@ -182,7 +208,16 @@ public class PlayerControler : MonoBehaviour
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentSceneIndex + 1);
     }
+    public void RestoreSavedData()
+    {
+        // Restore player stats
+        lives = PlayerPrefs.GetInt("PlayerLives", 3);
+        score = PlayerPrefs.GetInt("PlayerScore", 0);
+        inventory = PlayerPrefs.GetInt("PlayerInventory", 0);
 
+        // Update any UI or game state if necessary
+        levelInfo.UpdateScore(score);
+    }
     void SaveGame()
     {
         // Save the current level (scene index)
@@ -192,7 +227,6 @@ public class PlayerControler : MonoBehaviour
         PlayerPrefs.SetInt("PlayerLives", lives);
         PlayerPrefs.SetInt("PlayerScore", score);
         PlayerPrefs.SetInt("PlayerInventory", inventory);
-
         // Save player position
         PlayerPrefs.SetFloat("PlayerPosX", transform.position.x);
         PlayerPrefs.SetFloat("PlayerPosY", transform.position.y);
@@ -200,8 +234,10 @@ public class PlayerControler : MonoBehaviour
 
         PlayerPrefs.Save();
         Debug.Log("Game Saved!");
-    }
+        Debug.Log($"Game Saved! Position: ({transform.position.x}, {transform.position.y}, {transform.position.z})");
 
+    }
+    
     private void ShowWinnerPanel()
     {
         WinnerPanel.SetActive(true); // Show the Winner Panel
@@ -213,4 +249,38 @@ public class PlayerControler : MonoBehaviour
         Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
     }
+    private IEnumerator HandleFall()
+    {
+        yield return new WaitForSeconds(2f); // Allow the sound to play for a short duration
+
+        lives--;
+        score = 0;
+        PlayerPrefs.SetInt("PlayerScore", score);
+        PlayerPrefs.SetInt("PlayerLives", lives);
+        PlayerPrefs.Save();
+
+        DeletePositionPrefs();
+
+        if (lives < 1)
+        {
+            GameOverPanel.SetActive(true);
+            Time.timeScale = 0f; // Pause the game
+        }
+        else
+        {
+            hasFallen = false; // Reset the flag before reloading
+            transform.position = startingPosition; 
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Restart the level
+        }
+    }
+    private void DeletePositionPrefs()
+    {
+        PlayerPrefs.DeleteKey("PlayerPosX");
+        PlayerPrefs.DeleteKey("PlayerPosY");
+        PlayerPrefs.DeleteKey("PlayerPosZ");
+        PlayerPrefs.Save();
+        Debug.Log("Position-related PlayerPrefs deleted.");
+    }
+
 }
+
