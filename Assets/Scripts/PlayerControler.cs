@@ -61,18 +61,17 @@ public class PlayerControler : MonoBehaviour
                 Debug.LogError("Not enough AudioSources attached to the GameObject.");
             }
         }
-
+        //WinnerPanel.SetActive(false);
+        //GameOverPanel.SetActive(false);
         score = 0;
         inventory = PlayerPrefs.GetInt("PlayerInventory", 0);
         lives = PlayerPrefs.GetInt("PlayerLives", 3);
-
-        // Get winScore from LevelInfoManager
         winScore = levelInfo.WinScore;  // Access WinScore here
-        GameOverPanel.SetActive(false);
-        WinnerPanel.SetActive(false); // Initially hide the Winner Panel
         collectCoinSound = GetComponent<AudioSource>();
         fallSound = GetComponent<AudioSource>() ;
+
         StartCoroutine(DisplayLevelMessage());
+        
         if (backToMenuButtonGameOver != null)
             backToMenuButtonGameOver.onClick.AddListener(BackToMenu);
 
@@ -162,8 +161,10 @@ public class PlayerControler : MonoBehaviour
 
             if (lives < 1)
             {
+                Debug.Log("Game Over: Lives exhausted");
                 GameOverPanel.SetActive(true); // Show the GameOverPanel
-                Time.timeScale = 0f; // Pause the game
+                Time.timeScale = 0f;
+               
             }
             else
             {
@@ -240,9 +241,10 @@ public class PlayerControler : MonoBehaviour
     
     private void ShowWinnerPanel()
     {
+        Debug.Log("Showing Winner Panel");
         WinnerPanel.SetActive(true); // Show the Winner Panel
+        Time.timeScale = 0f;
    
-        Time.timeScale = 0f; // Pause the game so the player can see the message
     }
     public void BackToMenu()
     {
